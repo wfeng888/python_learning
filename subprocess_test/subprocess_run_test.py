@@ -11,9 +11,13 @@ def subprocess_run_test():
     while True:
         events = sel.select()
         for key,mask in events:
-            data=key.fd.read()
-            print(data)
+            if mask == selectors.EVENT_READ:
+                data=key.fileobj.read()
+                print(data)
+            else:
+                key.fileobj.write(b'wait')
         sel.unregister(proc.stdout)
+        sel.unregister(proc.stdin)
         break;
 if __name__=='__main__':
     subprocess_run_test()
